@@ -1,0 +1,16 @@
+##Prometheus Custom Rule
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: example
+    role: alert-rules
+  name: prometheus-custome-rules
+spec:
+  groups:
+  - name: alertmanager.rules
+    rules:
+    - alert: PodHighCPULoad
+      expr: rate (container_cpu_usage_seconds_total{image!="", container!="POD"}[5m])  > 0.8 * avg (kube_pod_container_resource_limits_cpu_cores{image!="", container!="POD"})
+      labels:
+        severity: critical
